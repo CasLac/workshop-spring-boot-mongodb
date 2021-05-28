@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import com.cdl.workshopmongo.domain.Post;
 import com.cdl.workshopmongo.domain.User;
 import com.cdl.workshopmongo.dto.AuthorDTO;
+import com.cdl.workshopmongo.dto.CommentDTO;
 import com.cdl.workshopmongo.repository.PostRepository;
 import com.cdl.workshopmongo.repository.UserRepository;
 
@@ -22,6 +23,9 @@ public class Instantiation implements CommandLineRunner {
 
 	@Autowired
 	private PostRepository postRepository;
+	
+	@Autowired
+	private PostRepository commentRepository;
 	 
 	@Override
 	public void run(String... args) throws Exception {
@@ -31,6 +35,7 @@ public class Instantiation implements CommandLineRunner {
 				
 		userRepository.deleteAll();
 		postRepository.deleteAll();
+		commentRepository.deleteAll();
 		
 		User maria = new User(null, "Maria Brown", "maria@gmail.com");
 		User alex = new User(null, "Alex Green", "alex@gmail.com");
@@ -40,6 +45,13 @@ public class Instantiation implements CommandLineRunner {
 
 		Post post1 = new Post(null, sdf.parse("21/03/2118"), "Partiu viagem", "Vou viajar para São Paulo. Abraços!", new AuthorDTO(maria));
 		Post post2 = new Post(null, sdf.parse("21/03/2118"), "Bom dia\"", "Acordei feliz hoje!", new AuthorDTO(maria));
+		
+		CommentDTO c1 = new CommentDTO("Boa viagem mano!", sdf.parse("21/03/2018"), new AuthorDTO(alex));
+		CommentDTO c2 = new CommentDTO("Aproveite!", sdf.parse("22/03/2018"), new AuthorDTO(bob));
+		CommentDTO c3 = new CommentDTO("Tenha um ótimo dia!", sdf.parse("23/03/2018"), new AuthorDTO(alex));
+		
+		post1.getComments().addAll(Arrays.asList(c1, c2));
+		post2.getComments().add(c3);
 		
 		postRepository.saveAll(Arrays.asList(post1, post2));
 		
